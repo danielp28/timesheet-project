@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 
 var database = firebase.database()
 
-$("#button").on("click", function (event) {
+$("button").on("click", function (event) {
   event.preventDefault();
 
   //USER INPUT
@@ -22,14 +22,13 @@ $("#button").on("click", function (event) {
   var startDate = $("#newStart").val();
   var employeeRate = $("#monthlyRate").val();
 
-  var newEmployee = {
+
+  database.ref().push({
     name: employeeName,
     role: employeeRole,
     start: startDate,
     rate: employeeRate
-  }
-
-  database.ref().push(newEmployee);
+  });
 
   //Alert
   alert("Employee successfully added");
@@ -46,16 +45,20 @@ database.ref().on("child_added", function (childSnapshot) {
   var employeeName = childSnapshot.val().name;
   var employeeRole = childSnapshot.val().role;
   var employeeStart = childSnapshot.val().start;
-  var employeeRate = childSnapshot.val().name;
+  var employeeRate = childSnapshot.val().rate;
+  var employeeMonths = 3;
+  var employeeTotal = employeeRate * employeeMonths;
 
-  var employeeStartPretty = moment.unix(employeeStart).format("MM/DD/YY");
 
-  var employeeBilled = employeeMonths * employeeRate;
+  $("table tr:last").after("<tr><td>" + employeeName + "</td><td>" + employeeRole + "</td><td>" + employeeStart + "</td><td>" + employeeMonths + "</td><td>" + employeeRate + "</td><td>" + employeeTotal + "</td>");
+  // var employeeStartPretty = moment.unix(employeeStart).format("MM/DD/YY");
 
-  var employeeMonths = moment().diff(moment.unix(employeeStart, "X"), "months");
+  // var employeeBilled = employeeMonths * employeeRate;
 
-  var employeeBilled = employeeMonths * employeeRate;
+  // var employeeMonths = moment().diff(moment.unix(employeeStart, "X"), "months");
 
-  $("#employee-table > tbody").append("<tr><td>" + employeeName + "</td><td>" + employeeRole + "</td><td>" + employeeStartPretty + "</td><td>" + employeeMonths + "</td><td>" + employeeRate + "</td><td>" + employeeBilled + "</td><td>");
+  // var employeeBilled = employeeMonths * employeeRate;
+
+  // $("#employee-table > tbody").append("<tr><td>" + employeeName + "</td><td>" + employeeRole + "</td><td>" + employeeStartPretty + "</td><td>" + employeeMonths + "</td><td>" + employeeRate + "</td><td>" + employeeBilled + "</td><td>");
 
 });
